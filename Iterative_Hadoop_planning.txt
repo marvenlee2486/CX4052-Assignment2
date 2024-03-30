@@ -1,0 +1,62 @@
+Crawler (Processing)
+Initial input <empty, [Initial link]>
+
+Mapper: (Stateless)
+    Input: <url, [outlink-url]>
+    Output: <outlink-url, sourcefile>
+
+Combine: (Stateless) (Local Deduplication)
+    Input: <url, sourcefile>
+    Output: <url, sourcefile>
+
+Reduce: (Stateless) 
+    Input: <url, sourcefile>
+    Output: <url, [outlink-url]>
+
+Master Node need to maintain whether a specific url is being processed to avoid reprocessed.
+Note: This is the crawler stage where we have to crawl url, in a real life setting, we do not have full list of URL and defnitely, need to crawl first.
+So the output for reducer is given to Mapper. To continously crawl, until a quota hit.
+
+
+Distributed File Cache
+    -> To store all the url ... 
+    -> The initial page rank ...
+
+Crawler (Endstage) - Graph Formation
+Mapper: 
+    Input: <url, [outlink-url]>
+    Output: <url, [outlink-url (Only links that are valid)]> 
+    Note: Filter by using the distirbuted file cache system.
+
+Reduce:
+    Input: <url, [outlink-url]>
+    Output: <url, (initialRank, [outlink-url])>
+    Note: select page rank from distributed File cache 
+
+
+Computing Page Rank
+Mapper: 
+    Input: <url, (initialRank of url, [outlink-url])>
+    Output: <outlink-url, (url, initialRank of url, [list of outlink-url of url])>
+
+Reducer:
+    Input: <outlink-url, (url, initialRank of url,  [list of outlink-url of url])>
+    Output: <url, (Rank,  [list of outlink-url of url])
+
+    mentioned can have one reducer to form the input back
+    but N^2 shuffle which is bottle neck
+
+
+Finalize Page Rank
+Mapper:
+    input: <url, (Rank,  [list of outlink-url of url])
+    output: <Rank, url>
+
+Combiner:
+    input: <Rank, url>
+    output: <Rank, [url]> 
+Reducer:
+    input: <Rank, [url]>  
+    output: <Rank, url> (Sorted)
+
+The output is store in the same distributed file cache
