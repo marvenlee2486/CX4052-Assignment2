@@ -8,9 +8,9 @@ import argparse
 
 
 parser = argparse.ArgumentParser(description = "Add parameter")
-parser.add_argument("-n", "--N", help = "Set the Number of vertex")
-parser.add_argument("-a", "--ALPHA", help = "Set the alpha")
-parser.add_argument("-c", "--CONNECT", help = "Set the connectivity of generated graph")
+parser.add_argument("-n", "--N", help = "Set the Number of vertex (Default: 4)")
+parser.add_argument("-a", "--ALPHA", help = "Set the alpha (Default: 0.8)")
+parser.add_argument("-c", "--CONNECT", help = "Set the connectivity of generated graph (Default: 0.5)")
 
 args = parser.parse_args()
 
@@ -20,6 +20,8 @@ generated = False
 MAX_ITERATION = 100
 CONNECTIVITY = 0.5
 error = 0.0001
+
+# Graph in Slide 53 in Lecture 7
 graph = np.array([[0, 1, 1, 1],
                   [1, 0, 0, 1],
                   [0, 0, 1, 0],
@@ -132,7 +134,7 @@ def iterativekunknwn(transitional):
         # print(v, new_transitional)
         iteration += 1
     print("Iterative")
-    print("Converge in", iteration)
+    print("Converge in", iteration, "iteration")
     print(v)
     
 
@@ -172,7 +174,7 @@ def matrixexponentialiterative(transitional):
         
         aprev = a
     print("Matrix Exponential")
-    print("Converge in", iteration)
+    print("Converge in", iteration, "Iterative")
     print(a)
 
 # O(N^3)
