@@ -7,7 +7,7 @@ import json
 # Matrix [a b] [a b] = [a x a + b x c,  a x b + b x d] 
 # Matrix [c d] [c d]   [c x a + d x c,  c x b + d x d]
 
-for line in sys.stdin:
+for line in sys.stdin: 
     responsible, value = line.strip().split('\t')
     row_range, col_range, col2_range = eval(responsible)
     matrix_1_resp = (row_range, col_range)

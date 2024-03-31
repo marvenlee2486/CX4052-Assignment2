@@ -12,14 +12,16 @@ def extract_root(url):
     root_url = parsed_url.scheme + "://" + parsed_url.netloc
     return root_url
 
+
 id = 0
+# A possible improvement is to cache the result so that a crawled page is not crawled again
+page = {}
 for line in sys.stdin: 
     url, value_str = line.strip().split('\t')
     page_text = eval(value_str)
-    #print("Input  Receive ... Processing")
-    if id <= 29:
-        id += 1
-        continue
+    page[url] = page_text
+
+for url, page_text in page.items():
     soup = BeautifulSoup(page_text, 'html.parser')
     root_url = extract_root(url)
     outlink_urls = []
@@ -28,7 +30,6 @@ for line in sys.stdin:
         try:
             if out_url[0] == "/":
                 out_url = root_url + out_url
-                #print("REform")
             response = requests.head(out_url, allow_redirects=True) # To get the most consistent one
             final_url = response.url
             outlink_urls.append(final_url)
@@ -38,4 +39,3 @@ for line in sys.stdin:
             # print("Not a URL")
     id += 1
     print(f"{url}\t{json.dumps(outlink_urls)}")
-

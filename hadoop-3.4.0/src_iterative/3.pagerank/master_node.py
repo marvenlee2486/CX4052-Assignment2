@@ -27,7 +27,7 @@ current_rank = get_rank_from_file(intial_file_name)
 id = 1
 input = intial_file_name
 while True:
-   
+    print(id/2, "iteration")
     output = "compute_" + str(id) + "_mapper_output.txt"
     command = f"python3 compute_mapper.py < {input} > {output}"
     subprocess.run([command],shell = True)

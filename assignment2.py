@@ -20,10 +20,10 @@ generated = False
 MAX_ITERATION = 100
 CONNECTIVITY = 0.5
 error = 0.0001
-graph = np.array([[0, 1, 0, 1],
+graph = np.array([[0, 1, 1, 1],
                   [1, 0, 0, 1],
-                  [0, 0, 1, 1],
-                  [1, 0, 1, 0]])
+                  [0, 0, 1, 0],
+                  [0, 1, 1, 0]])
 
 if args.N:
     N = int(args.N)
@@ -35,22 +35,11 @@ if args.CONNECT:
 
 def plot(graph):
     G = nx.from_numpy_array(graph,  create_using=nx.MultiDiGraph())
-    # Draw the graph
-    # nx_pydot.write_dot(G, 'multig.dot')
-    
-    # dot = Source.from_file('multig.dot')
-   
-    # dot.view()
     pos = nx.spring_layout(G)  # Layout for positioning nodes
     nx.draw(G, pos, with_labels=True, node_size=500, node_color='skyblue', font_size=12, font_weight='bold', arrows=True)
-
-    # print(G.edges())
-    # Add labels to the nodes
     labels = {i: i for i in range(len(G.nodes()))}  # Assuming node labels are indices (0, 1, 2, ...)
     nx.draw_networkx_labels(G, pos, labels, font_size=12, font_color='black')
     plt.savefig("graph.png")
-# plot(graph)
-
 
 def generator(n, connectivity = 0.5):
     m = int(n * n * connectivity)
@@ -62,27 +51,28 @@ def generator(n, connectivity = 0.5):
             adj_matrix[i][i] = 1
     return adj_matrix
 
-graph = generator(N, CONNECTIVITY)
+if generated:
+    graph = generator(N, CONNECTIVITY)
 
 # 2 cyclic Graph
-N = 6
-graph = np.array([[0,1,0,0,0,0],
-                 [0,0,1,0,0,0],
-                 [1,0,0,0,0,0],
-                 [0,0,0,0,1,0],
-                 [0,0,0,0,0,1],
-                 [0,0,0,1,0,0]]
-                 )
+# N = 6
+# graph = np.array([[0,1,0,0,0,0],
+#                  [0,0,1,0,0,0],
+#                  [1,0,0,0,0,0],
+#                  [0,0,0,0,1,0],
+#                  [0,0,0,0,0,1],
+#                  [0,0,0,1,0,0]]
+#                  )
 
 # Single Path
-N = 6
-graph = np.array([[0,1,0,0,0,0],
-                 [0,0,1,0,0,0],
-                 [0,0,0,1,0,0],
-                 [0,0,0,0,1,0],
-                 [0,0,0,0,0,1],
-                 [0,0,0,0,0,1]]
-                 )
+# N = 6
+# graph = np.array([[0,1,0,0,0,0],
+#                  [0,0,1,0,0,0],
+#                  [0,0,0,1,0,0],
+#                  [0,0,0,0,1,0],
+#                  [0,0,0,0,0,1],
+#                  [0,0,0,0,0,1]]
+#                  )
 
 # N = 64
 # graph = np.zeros((64,64))
@@ -117,6 +107,7 @@ for i in range(N):
 transitional = np.divide(graph, column_sum)
 
 # O(K N^2)
+# Assuming K is known (Iterate until Max iteration)
 def iterative(transitional):
     v = np.ones(N)
     v /= N
@@ -127,6 +118,7 @@ def iterative(transitional):
         history.append(v)
     print(v)
 
+# Assuming K is unknown
 def iterativekunknwn(transitional):
     v = np.ones(N)
     v /= N
@@ -145,6 +137,7 @@ def iterativekunknwn(transitional):
     
 
 # O(N ^2 log(k))
+# Assuming K is known (Max Iteration)
 def matrixexponentialrecursive(transitional):
     new_transitional = ALPHA * transitional + (1 - ALPHA) * np.ones(N) / N 
 
@@ -160,6 +153,7 @@ def matrixexponentialrecursive(transitional):
     print(np.matmul(step(new_transitional, MAX_ITERATION), np.ones(N) / N))
 
 # O(N ^2 log(k))
+# Assuming K is unknown 
 def matrixexponentialiterative(transitional):
     new_transitional = ALPHA * transitional + (1 - ALPHA) * np.ones(N) / N 
     
@@ -181,7 +175,6 @@ def matrixexponentialiterative(transitional):
     print("Converge in", iteration)
     print(a)
 
-
 # O(N^3)
 def theorectical(transitional):
     # R' = ALPHA T @ R' + (1- ALPHA)/N (1)
@@ -194,14 +187,9 @@ def theorectical(transitional):
     print("Theorectical")
     print(np.linalg.solve(identity - ALPHA * transitional,  (1 - ALPHA) * np.ones(N) / N))
 
-# print(15/148, 19/148, 95/148, 19/148)
+
 theorectical(transitional)
 # matrixexponentialrecursive(transitional)
 matrixexponentialiterative(transitional)
 # iterative(transitional)
 iterativekunknwn(transitional)
-# R' = b T @ R' + (1 - ALPHA)/N
-
-# R' = (b T + (1 - ALPHA)/N ) @ R' 
-# R' = (b T) @ R' + (1 - ALPHA)/N @ R' 
-# Since summation R' is one.. Therefore (1 - ALPHA)/N @ R' =  (1 - ALPHA)/N

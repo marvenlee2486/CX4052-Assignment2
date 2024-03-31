@@ -4,10 +4,10 @@
 # This is to distribute task to map for multiplication
 
 import json
-a = "../3. matrix_formation/matrix_2_a_reducer_output.txt"
-b = "../3. matrix_formation/matrix_2_b_reducer_output.txt"
-c = "../3. matrix_formation/matrix_2_c_reducer_output.txt"
-d = "../3. matrix_formation/matrix_2_d_reducer_output.txt"
+a = "../3.matrix_formation/matrix_2_a_reducer_output.txt"
+b = "../3.matrix_formation/matrix_2_b_reducer_output.txt"
+c = "../3.matrix_formation/matrix_2_c_reducer_output.txt"
+d = "../3.matrix_formation/matrix_2_d_reducer_output.txt"
 
 def convert(row, col):
     if(row == 0 and col == 0):

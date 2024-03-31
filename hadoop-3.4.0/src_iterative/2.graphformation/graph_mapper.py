@@ -13,8 +13,8 @@ distributed_file_cache = [line.strip().split('\t')[0] for line in distributed_fi
 for line in sys.stdin: 
     url, value_str = line.strip().split('\t')
     outlink_url = eval(value_str)
-    outlink_url = [link for link in outlink_url if link in distributed_file_cache]
-    outlink_url = list(set(outlink_url))
+    outlink_url = [link for link in outlink_url if link in distributed_file_cache] # Only select node that have been crawled
+    outlink_url = list(set(outlink_url)) # Deduplicate
     print(f"{url}\t{json.dumps(outlink_url)}")
 
 
